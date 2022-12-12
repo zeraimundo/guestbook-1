@@ -1,10 +1,10 @@
-FROM golang:1.14 as builder
+FROM --platform=linux/amd64 golang:1.15 as builder
 RUN go get github.com/codegangsta/negroni
 RUN go get github.com/gorilla/mux github.com/xyproto/simpleredis
 COPY main.go .
 RUN go build main.go
 
-FROM busybox:ubuntu-14.04
+FROM --platform=linux/amd64 busybox:ubuntu-14.04
 
 COPY --from=builder /go//main /app/guestbook
 
