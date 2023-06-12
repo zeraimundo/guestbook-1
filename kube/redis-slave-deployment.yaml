@@ -1,25 +1,30 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: redis-slave
+  name: redis-secondary
   labels:
     app: redis
-    role: slave
+    role: secondary
 spec:
   replicas: 2
   selector:
     matchLabels:
       app: redis
-      role: slave
+      role: secondary
   template:
     metadata:
       labels:
         app: redis
-        role: slave
+        role: secondary
     spec:
       containers:
-      - name: redis-slave
-        image: ibmcom/guestbook-redis-slave:v2
+      - name: redis-secondary
+        image: redis:latest
         ports:
         - name: redis-server
           containerPort: 6379
+        command:
+        - redis-server
+        - "--slaveof"
+        - "redis-primary"
+        - "6379"
