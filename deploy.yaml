@@ -1,0 +1,48 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  creationTimestamp: null
+  labels:
+    app: guestbook
+  name: guestbook
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: guestbook
+  strategy: {}
+  template:
+    metadata:
+      labels:
+        app: guestbook
+    spec:
+      containers:
+      - image: ibmcom/guestbook:v2
+        imagePullPolicy: IfNotPresent
+        name: guestbook
+        resources: {}
+        env:
+        - name: REDIS_MASTER_SERVICE_HOST
+          valueFrom:
+            secretKeyRef:
+              name: guestbook-secrets
+              key: redishost
+        - name: REDIS_MASTER_SERVICE_PORT
+          valueFrom:
+            secretKeyRef:
+              name: guestbook-secrets
+              key: redisport
+        - name: REDIS_MASTER_SERVICE_PASSWORD
+          valueFrom:
+            secretKeyRef:
+              name: guestbook-secrets
+              key: redispass
+        - name: REDIS_MASTER_PORT
+          valueFrom:
+            secretKeyRef:
+              name: guestbook-secrets
+              key: redismasterport
+        ports:
+        - name: guestbook
+          containerPort: 3000
+status: {}
